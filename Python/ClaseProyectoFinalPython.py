@@ -265,15 +265,28 @@ class usuario():
             cantidadListas+=1
         return cantidad
 
+#Funcion para el punto 4 de balance general
     def balanceGeneral(self):
         consulta = self.consultarBDCripto()
-        ConsultaListaCripto = self.listaCriptomonedas()
-
+        diccionarioPrecio = self.listaCriptomonedas()
+        acumulador = 0
         for valor in consulta['Criptomoneda']:
             if self.codigo in str(valor.get('Codigo')):
-                for nombre, cantidad  in valor['Nombre'],valor['Cantidad']:
-                    print(nombre)
-                    print(cantidad)
-                    # print(valor.get('Nombre'))
-                    # print(valor.get('Cantidad'))
-                    # print(valor.get('Cantidad')* ConsultaListaCripto.keys(valor.get('Nombre')))
+                for nombre, cantidad  in zip(valor['Nombre'],valor['Cantidad']):
+                    precio = diccionarioPrecio[nombre]
+                    print(f"La moneda: {nombre}, tiene un precio en USD actual de {precio}. Cuenta en la billetera con {cantidad} para un monto de {cantidad * precio}")
+                    acumulador += (cantidad * precio)
+        print(f"Monto toda en USD de todas las monedas {acumulador}")
+
+    def historico(self):
+        consulta = self.consultarBDTransaccion()
+        for valor in consulta['Transaccion']:
+            if self.codigo in str(valor.get('Codigo')):
+                for fecha, Tipo, cantidad, moneda, montn  in zip(valor['Fecha'],valor['Tipo'],valor['Cantidad'],valor['Moneda'], valor['Monto']):
+                    print("...............................")
+                    print("Fecha: ", fecha)
+                    print("Tipo: ", Tipo)
+                    print("Cantidad: ", cantidad)
+                    print("Moneda: ", moneda)
+                    print("Monto: ", montn)
+                    print("...............................")
