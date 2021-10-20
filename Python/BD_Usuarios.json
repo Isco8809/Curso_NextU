@@ -1,0 +1,12 @@
+{
+  "Usuarios": [
+    {
+      "Nombre": "Francisco",
+      "Codigo": 123
+    },
+    {
+      "Nombre": "Javier",
+      "Codigo": 456
+    }
+  ]
+}
