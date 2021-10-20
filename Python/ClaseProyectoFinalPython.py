@@ -30,14 +30,14 @@ class usuario():
     def codigoUsuario(self):
         verificacion=True
         Datos = self.consultarBDUsuarios()
-        usuario = input("Ingrese el codigo de usuario")
+        usuario = int(input("Ingrese el codigo de usuario"))
         while verificacion:
             for a in Datos['Usuarios']:
-                if usuario in str(a['Codigo']):
+                if usuario == a['Codigo']:
                     self.codigo = usuario
                     verificacion=False
             if  verificacion:
-                usuario = input("El codigo no se encuentra, por favor ingrese el codigo correcto: ")
+                usuario = int(input("El usuario no se encuentra, por favor ingrese el codigo de usuario correcto: "))
         return self.codigo
 
 #Conexión a la página de criptomonedas
