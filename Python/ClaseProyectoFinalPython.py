@@ -60,7 +60,7 @@ class usuario():
     def criptomonedaUsuario(self):
         consulta = self.consultarBDCripto()
         for valor in consulta['Criptomoneda']:
-            if self.codigo in str(valor.get('Codigo')):
+            if self.codigo == valor.get('Codigo'):
                 return valor.get('Nombre')
         return 0
         
@@ -81,7 +81,7 @@ class usuario():
     def validarCodigo(self):
         valida = True
         while valida:
-            codigo = input("Ingrese el codigo: ")
+            codigo = int(input("Ingrese el codigo: "))
             if codigo != self.codigo:
                 valida = False
                 print("Codigo correcto!") 
@@ -100,7 +100,7 @@ class usuario():
         return numero
 
 #valida que la cantidad no sea negativa o igual a cero
-    def validarMonto(self):
+    def validarMontoRecibido(self):
         self.cantidad = self.validarCantidad()
         while self.cantidad <= 0: 
             print("El monto recibido no puede ser cero o negativo")
@@ -125,9 +125,9 @@ class usuario():
         Datos = self.consultarBDCripto()
         cantidadListas=0
         for valores in Datos['Criptomoneda']:
-            if self.codigo in str(valores['Codigo']):
+            if self.codigo == valores['Codigo']:
                 posicionUsuario = cantidadListas
-                valor = valores['Cantidad'][posicion] + self.validarMonto()
+                valor = valores['Cantidad'][posicion] + self.validarMontoRecibido()
             cantidadListas+=1
         Datos['Criptomoneda'][posicionUsuario]['Cantidad'][posicion] = valor
         self.escribirArchivo(Datos)   
@@ -137,10 +137,10 @@ class usuario():
         Datos = self.consultarBDCripto()
         cantidadListas=0
         for valores in Datos['Criptomoneda']:
-            if self.codigo in str(valores['Codigo']):
+            if self.codigo == valores['Codigo']:
                 posicionUsuario = cantidadListas
                 Datos['Criptomoneda'][posicionUsuario]['Nombre'].append(self.moneda)
-                Datos['Criptomoneda'][posicionUsuario]['Cantidad'].append(self.validarMonto())
+                Datos['Criptomoneda'][posicionUsuario]['Cantidad'].append(self.validarMontoRecibido())
             cantidadListas+=1
         self.escribirArchivo(Datos)  
     
@@ -150,18 +150,19 @@ class usuario():
         moneda = self.moneda
         lista = self.criptomonedaUsuario()
         if moneda in lista:
-            valor = lista.index(moneda)
-            self.sumarCriptomoneda(valor)
+            posicion = lista.index(moneda)
+            self.sumarCriptomoneda(posicion)
         else:
             self.adicionarCirpto()
 
+#Guardamos los datos de la transacción, y el tipo de transacción nos define que logica ejecutar
     def guardarTransaccion(self,tipo):
         self.tipo = tipo
         Datos = self.consultarBDTransaccion()
         posicion=0
         fecha = datetime.datetime.now()
         for valores in Datos['Transaccion']:
-            if self.codigo in str(valores['Codigo']):
+            if self.codigo == valores['Codigo']:
                 Datos['Transaccion'][posicion]['Fecha'].append(str(fecha))
                 Datos['Transaccion'][posicion]['Tipo'].append(self.tipo)
                 Datos['Transaccion'][posicion]['Moneda'].append(self.moneda)
@@ -183,9 +184,8 @@ class usuario():
         condicion = True
         while condicion:
             for valor in consulta['Criptomoneda']:
-                if self.codigo == str(valor.get('Codigo')):
+                if self.codigo == valor.get('Codigo'):
                     if moneda in str(valor.get('Nombre')):
-                        print("la moneda está!")
                         self.moneda =  moneda
                         condicion =  False
                     else:
@@ -201,7 +201,7 @@ class usuario():
         posicion = self.criptomonedaUsuario().index(self.moneda)
         precio = self.listaCriptomonedas()[self.moneda]
         for valores in Datos['Criptomoneda']:
-            if self.codigo in str(valores['Codigo']):
+            if self.codigo == valores['Codigo']:
                 posicionUsuario = cantidadListas
                 cantidad = Datos['Criptomoneda'][posicionUsuario]['Cantidad'][posicion]
             cantidadListas+=1
@@ -212,7 +212,7 @@ class usuario():
     def validarMonto(self):
         while True:
             try:
-                numero = float(input("Ingrese el monto: "))
+                numero = float(input("Ingrese el monto en USD: "))
                 break
             except ValueError:
                 print("El monto ingresado es incorrecto")
@@ -242,7 +242,7 @@ class usuario():
         Datos = self.consultarBDCripto()
         posicion = self.criptomonedaUsuario().index(self.moneda)
         for valores in Datos['Criptomoneda']:
-            if self.codigo in str(valores['Codigo']):
+            if self.codigo == valores['Codigo']:
                 posicionUsuario = cantidadListas
                 Datos['Criptomoneda'][posicionUsuario]['Cantidad'][posicion] -= (self.monto / self.listaCriptomonedas()[self.moneda])
             cantidadListas+=1
@@ -259,7 +259,7 @@ class usuario():
         cantidadListas=0
         posicion = self.criptomonedaUsuario().index(self.moneda)
         for valores in Datos['Criptomoneda']:
-            if self.codigo in str(valores['Codigo']):
+            if self.codigo == valores.get('Codigo'):
                 posicionUsuario = cantidadListas
                 cantidad = Datos['Criptomoneda'][posicionUsuario]['Cantidad'][posicion]
             cantidadListas+=1
@@ -271,17 +271,18 @@ class usuario():
         diccionarioPrecio = self.listaCriptomonedas()
         acumulador = 0
         for valor in consulta['Criptomoneda']:
-            if self.codigo in str(valor.get('Codigo')):
+            if self.codigo == valor.get('Codigo'):
                 for nombre, cantidad  in zip(valor['Nombre'],valor['Cantidad']):
                     precio = diccionarioPrecio[nombre]
                     print(f"La moneda: {nombre}, tiene un precio en USD actual de {precio}. Cuenta en la billetera con {cantidad} para un monto de {cantidad * precio}")
                     acumulador += (cantidad * precio)
         print(f"Monto toda en USD de todas las monedas {acumulador}")
 
+#Método para ver el histórico de transacciones
     def historico(self):
         consulta = self.consultarBDTransaccion()
         for valor in consulta['Transaccion']:
-            if self.codigo in str(valor.get('Codigo')):
+            if self.codigo == valor.get('Codigo'):
                 for fecha, Tipo, cantidad, moneda, montn  in zip(valor['Fecha'],valor['Tipo'],valor['Cantidad'],valor['Moneda'], valor['Monto']):
                     print("...............................")
                     print("Fecha: ", fecha)
