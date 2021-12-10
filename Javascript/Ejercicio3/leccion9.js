@@ -28,3 +28,55 @@ function Promedio (nota1,nota2){
     return (nota1+nota2)/2;
 }
 GestionarEstudiante('Jose Carrillo', 18,20, Promedio);
+
+// funcion filter, está disponibles para variables tipo arreglo
+
+var filttrado
+var edades
+edades = [20,15,30,22,17,18,25,27,29];
+filttrado  = edades.filter(function(x){
+    return x%2 == 0;
+});
+console.log(filttrado);
+
+//El equivalente a la funcion anterior es (=> indica que es una funcion)
+filttrado = edades.filter( x => {
+    return x > 22;
+});
+console.log(filttrado);
+
+// Ejemplo con un arreglo más completo
+
+
+var filttrado
+var personas
+
+personas = [
+    {
+        nombre: "Ana",
+        edad: 15
+    },
+    {
+        nombre: "Luisa",
+        edad: 22
+    },
+    {
+        nombre: "Carlos",
+        edad: 30
+    }
+];
+
+filttrado = personas.filter( x => {
+    return x.edad > 19;
+})
+console.log(filttrado)
+
+filttrado = personas.map( x => {
+    return x.nombre;
+})
+console.log(filttrado) // devuelve ['Ana','Luisa','Carlos']
+
+filttrado = personas.find( x => {
+    return x.nombre = "Ana";
+})
+console.log(filttrado) // devuelve {nombre: 'Ana' , edad: 15}
