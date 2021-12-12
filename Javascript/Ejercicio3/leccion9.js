@@ -80,3 +80,73 @@ filttrado = personas.find( x => {
     return x.nombre = "Ana";
 })
 console.log(filttrado) // devuelve {nombre: 'Ana' , edad: 15}
+
+
+// Taller
+
+var eventos = [
+    {
+        nombre: "e1",
+        fecha: new Date(2018,3,20)
+    },
+    {
+        nombre: "e2",
+        fecha: new Date(2018,2,20)
+    },
+    {
+        nombre: "e3",
+        fecha: new Date(2018,3,10)
+    },
+    {
+        nombre: "e4",
+        fecha: new Date(2018,5,20)
+    },
+    {
+        nombre: "e5",
+        fecha: new Date(2018,6,20)
+    },
+    {
+        nombre: "e6",
+        fecha: new Date(2018,0,20)
+    },
+    {
+        nombre: "e7",
+        fecha: new Date(2018,8,20)
+    },
+ ];
+
+function organizarEventos(evento, fechaRef) {
+    var futuros;
+    var pasados;
+// Separo los eventos pasados y futuros en difernetes arreglos
+    futuros = evento.filter( x => x.fecha.getTime() >
+        fechaRef.getTime() )
+    pasados = evento.filter( x => x.fecha.getTime() <
+        fechaRef.getTime())
+//Ordeno los arrglos por separado, con la funcion sort
+    futuros = futuros.sort((a,b)=>{
+        if (a.fecha.getTime() > b.fecha.getTime()){
+            return 1;
+        }
+        if (a.fecha.getTime() < b.fecha.getTime()){
+            return -1;
+        }
+            return 0;
+        })
+    
+    pasados = pasados.sort((a,b)=>{
+        if (a.fecha.getTime() > b.fecha.getTime()){
+                return -1;
+        }
+        if (a.fecha.getTime() < b.fecha.getTime()){
+                return 1;
+        }
+                return 0;
+        })
+    
+    return [futuros,pasados]
+}
+
+var resultado = organizarEventos(eventos, new Date(2018, 3, 21));
+console.log(resultado[0])
+console.log(resultado[1])
